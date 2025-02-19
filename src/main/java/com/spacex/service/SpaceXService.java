@@ -71,7 +71,7 @@ public class SpaceXService {
         mission.setStatus(status);
     }
 
-    public List<Mission> getMissionSummary() {
+    public String getMissionSummary() {
         List<Mission> missions = new ArrayList<>(missionRepository.getAllMissions().values());
         missions.sort((m1, m2) -> {
             int rocketCountComparison = Integer.compare(m2.getRocketIds().size(), m1.getRocketIds().size());
@@ -80,7 +80,20 @@ public class SpaceXService {
             }
             return rocketCountComparison;
         });
-        return missions;
+
+        StringBuilder summaryBuilder = new StringBuilder();
+        for (Mission mission : missions) {
+            String missionDetails = String.format("● %s – %s – Dragons: %d",
+                    mission.getName(), mission.getStatus().getText(), mission.getRocketIds().size());
+            summaryBuilder.append(missionDetails).append("\n");
+
+            for (String rocketId : mission.getRocketIds()) {
+                Rocket rocket = rocketRepository.getRocket(rocketId);
+                String rocketDetails = String.format("   ● %s – %s", rocket.getName(), rocket.getStatus().getText());
+                summaryBuilder.append(rocketDetails).append("\n");
+            }
+        }
+        return summaryBuilder.toString().trim();
     }
 
     private Mission findMissionByRocketId(String rocketId) {

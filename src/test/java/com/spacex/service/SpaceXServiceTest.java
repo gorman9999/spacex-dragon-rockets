@@ -7,7 +7,6 @@ import com.spacex.model.RocketStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -100,13 +99,12 @@ public class SpaceXServiceTest {
         spaceXService.assignRocketsToMission(Set.of("1"), "1");
         spaceXService.assignRocketsToMission(Set.of("2"), "2");
 
-        List<Mission> summary = spaceXService.getMissionSummary();
+        String summary = spaceXService.getMissionSummary();
 
-        assertEquals("Mars", summary.get(0).getName());
-        assertEquals("Earth", summary.get(1).getName());
-        assertEquals("Jupiter", summary.get(2).getName());
-        assertEquals(1, summary.get(0).getRocketIds().size());
-        assertEquals(1, summary.get(1).getRocketIds().size());
-        assertEquals(0, summary.get(2).getRocketIds().size());
+        assertEquals("● Mars – In progress – Dragons: 1\n" +
+                "   ● Dragon 1 – In space\n" +
+                "● Earth – In progress – Dragons: 1\n" +
+                "   ● Dragon 2 – In space\n" +
+                "● Jupiter – Scheduled – Dragons: 0", summary);
     }
 }
